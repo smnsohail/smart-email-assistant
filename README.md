@@ -1,3 +1,2 @@
 # smart-email-assistant
-
-Under progress. Complete code will soon be available.
+Under upgradation, will update all the necessary details soon...
