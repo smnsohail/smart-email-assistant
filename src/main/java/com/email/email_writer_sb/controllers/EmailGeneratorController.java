@@ -11,10 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/email")
-@AllArgsConstructor
 public class EmailGeneratorController {
 
-    private EmailGeneratorService emailGeneratorService;
+    private final EmailGeneratorService emailGeneratorService;
+
+    public EmailGeneratorController(EmailGeneratorService emailGeneratorService) {
+        this.emailGeneratorService = emailGeneratorService;
+    }
 
     @PostMapping("/generate")
     public ResponseEntity<String> generateEmailContent(@RequestBody EmailRequest emailRequest){

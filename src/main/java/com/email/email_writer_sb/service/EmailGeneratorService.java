@@ -12,18 +12,20 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class EmailGeneratorService {
-    //DI for WebClient to make HTTP requests
-    private final WebClient webClient;
 
-    public EmailGeneratorService(WebClient webClient) {
-        this.webClient = webClient;
-    }
-
-    @Value("{gemini.api.url}")
+    @Value("${gemini.api.url}")
     private String geminiApiUrl;
 
     @Value("${gemini.api.key}")
     private String geminiApiKey;
+
+    //DI for WebClient to make HTTP requests
+    private final WebClient webClient;
+
+
+    public EmailGeneratorService(WebClient webClient) {
+        this.webClient = webClient;
+    }
 
 
     public String generateEmailReply(EmailRequest emailRequest) {
@@ -32,17 +34,25 @@ public class EmailGeneratorService {
 
 
         //Cast a request
-        Map<String, Object> requestBody = Map.of("contents", new Object[]{Map.of("parts", new Object[]{Map.of("text", prompt)})});
+        Map<String, Object> requestBody = Map.of(
+                "contents", new Object[]{
+                        Map.of("parts", new Object[]{
+                                Map.of("text", prompt)
+                        })
+                }
+
+        );
 
         // Send a request and get response
 
         String response = webClient.post()
-                .uri(geminiApiUrl + geminiApiKey)
+                .uri(geminiApiUrl + "?key=" + geminiApiKey)
                 .header("Content-Type", "application/json")
                 .bodyValue(requestBody)// Set the request body with the prompt
                 .retrieve()
                 .bodyToMono(String.class)
-                .block();
+                .block()
+        ;
 
         /*
         webClient.post(): Initiates an HTTP POST request.
@@ -59,20 +69,15 @@ public class EmailGeneratorService {
     private String extractEmailContentFromResponse(String response) {
         try {
             // Assuming the response is a JSON string containing the email content
-            // You may need to adjust this based on the actual response structure
+            //may need to adjust this based on the actual response structure
 
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(response);
-            return rootNode.path("candidates")
-                    .get(0) //because response contains an array of candidates
+            return rootNode.path("candidates").get(0) //because response contains an array of candidates
                     .path("content") // this is an object containing the content
-                    .path("parts")
-                    .get(0) // It is array of parts, we take the first part
-                    .path("text")
-                    .asText(); // Replace with actual extraction logic if needed
+                    .path("parts").get(0) // It is array of parts, we take the first part
+                    .path("text").asText(); // Replace with actual extraction logic if needed
         } catch (Exception e) {
-            // Handle any exceptions that may occur during response processing
-            // write exceptions
             System.err.println("Error processing response: " + e.getMessage());
             e.printStackTrace();
             return "Error generating email reply";
@@ -81,7 +86,7 @@ public class EmailGeneratorService {
 
     public String buildPrompt(EmailRequest emailRequest) {
         StringBuilder prompt = new StringBuilder();
-        prompt.append("Generate a professional email reply for the following email content. Please don't generate a subject line");
+        prompt.append("Generate a professional email or reply for the following email content. Please don't generate a subject line, look at the prompt below and generate a reply based on the content provided.\n\n");
 
         if (emailRequest.getTone() != null && !emailRequest.getTone().isEmpty()) {
             prompt.append("Use a ").append(emailRequest.getTone()).append(" tone");
