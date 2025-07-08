@@ -1,0 +1,62 @@
+{
+  "manifest_version": 3,
+  "name": "Smart Email Assistant",
+  "version": "1.0.0",
+  "description": "Generate smart email responses with AI assistance",
+  
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  
+  "host_permissions": [
+    "http://localhost:8080/*",
+    "https://gmail.com/*",
+    "https://mail.google.com/*",
+    "https://outlook.live.com/*",
+    "https://outlook.office.com/*"
+  ],
+  
+  "action": {
+    "default_popup": "dist/smart-email-frontend/index.html",
+    "default_title": "Smart Email Assistant",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": [
+        "https://gmail.com/*",
+        "https://mail.google.com/*",
+        "https://outlook.live.com/*",
+        "https://outlook.office.com/*"
+      ],
+      "js": ["content-script.js"],
+      "css": ["content-styles.css"]
+    }
+  ],
+  
+  "web_accessible_resources": [
+    {
+      "resources": ["dist/smart-email-frontend/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' http://localhost:8080 https://api.gemini.google.com;"
+  }
+}

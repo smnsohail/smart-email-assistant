@@ -1,0 +1,76 @@
+/* Smart Email Assistant Content Script Styles */
+
+.sea-assistant-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 0 4px;
+  box-shadow: 0 2px 4px rgba(52, 152, 219, 0.2);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1;
+}
+
+.sea-assistant-button:hover {
+  background: linear-gradient(135deg, #2980b9, #1f4e79);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+}
+
+.sea-assistant-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(52, 152, 219, 0.2);
+}
+
+.sea-assistant-button svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Gmail specific styling */
+[data-app-section="ConversationView"] .sea-assistant-button,
+[role="toolbar"] .sea-assistant-button {
+  font-size: 12px;
+  padding: 6px 10px;
+}
+
+/* Outlook specific styling */
+[data-app-section="MailCompose"] .sea-assistant-button {
+  font-size: 12px;
+  padding: 6px 10px;
+  margin: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sea-assistant-button {
+    font-size: 12px;
+    padding: 6px 8px;
+    gap: 4px;
+  }
+  
+  .sea-assistant-button svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* Override any conflicting styles from email clients */
+.sea-assistant-button * {
+  box-sizing: border-box;
+}
+
+/* Popup overlay styles (if needed) */
+#smart-email-popup {
+  border: 1px solid #e0e6ed !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+}

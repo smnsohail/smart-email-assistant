@@ -1,0 +1,94 @@
+<div class="email-assistant-container">
+  <div class="header">
+    <h1>Smart Email Response</h1>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" #emailForm="ngForm" class="email-form">
+    <!-- Email Content Input -->
+    <div class="form-group">
+      <label for="emailContent">Email Content:</label>
+      <textarea
+        id="emailContent"
+        name="emailContent"
+        [(ngModel)]="emailContent"
+        placeholder="Enter the email content you want to respond to..."
+        class="email-input"
+        rows="6"
+        required
+        [disabled]="isLoading">
+      </textarea>
+    </div>
+
+    <!-- Tone Selectors -->
+    <div class="form-group">
+      <label>Select Tone:</label>
+      <div class="tone-options">
+        <div 
+          *ngFor="let tone of toneOptions" 
+          class="tone-option"
+          [class.selected]="selectedTone === tone.value">
+          <input
+            type="radio"
+            [id]="tone.value"
+            name="tone"
+            [value]="tone.value"
+            [(ngModel)]="selectedTone"
+            (change)="onToneChange()"
+            [disabled]="isLoading">
+          <label [for]="tone.value">{{ tone.label }}</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Tone Input -->
+    <div class="form-group" *ngIf="selectedTone === 'custom'">
+      <label for="customTone">Custom Tone:</label>
+      <input
+        type="text"
+        id="customTone"
+        name="customTone"
+        [(ngModel)]="customTone"
+        placeholder="Enter your custom tone (e.g., enthusiastic, formal, apologetic)"
+        class="custom-tone-input"
+        [disabled]="isLoading">
+    </div>
+
+    <!-- Submit Button -->
+    <div class="form-group">
+      <button 
+        type="submit" 
+        class="submit-btn"
+        [disabled]="isLoading || !emailContent.trim() || (selectedTone === 'custom' && !customTone.trim())">
+        <span *ngIf="!isLoading">Generate Response</span>
+        <span *ngIf="isLoading" class="loading-text">
+          <span class="spinner"></span>
+          Generating...
+        </span>
+      </button>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+  </form>
+
+  <!-- Generated Response -->
+  <div *ngIf="generatedResponse" class="response-container">
+    <h3>Generated Email Response:</h3>
+    <div class="response-content">
+      {{ generatedResponse }}
+    </div>
+    <div class="response-actions">
+      <button type="button" class="secondary-btn" (click)="clearForm()">
+        Clear All
+      </button>
+      <button type="button" class="copy-btn" (click)="copyToClipboard()">
+        Copy Response
+      </button>
+      <button type="button" class="insert-btn" (click)="insertIntoEmail()">
+        Insert into Email
+      </button>
+    </div>
+  </div>
+</div>
